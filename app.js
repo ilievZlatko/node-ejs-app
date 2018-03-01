@@ -6,8 +6,21 @@ const mongoose = require('mongoose');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+// Import Models
+const Article = require('./models/article');
+
 mongoose.connect('mongodb://localhost/nodekb');
 const db = mongoose.connection;
+
+// Check connection
+db.once('open', () => {
+    console.log('connected to MongoDB');
+});
+
+// Check for DB errors
+db.on('error', err => {
+    console.log(err);
+});
 
 app.use(express.static(__dirname + '/assets'));
 
@@ -17,27 +30,13 @@ app.set('view engine', 'ejs');
 
 // Home Route
 app.get('/', (req, res) => {
-    let articles = [
-        {
-            id: 1,
-            title: 'Article One',
-            author: 'John Doe',
-            body: 'This is Article One'
-        },
-        {
-            id: 2,
-            title: 'Article Two',
-            author: 'John Doe',
-            body: 'This is Article Two'
-        },
-        {
-            id: 3,
-            title: 'Article Three',
-            author: 'Philip Baker',
-            body: 'This is Article Three'
+    Article.find({}, (err, articles) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('index', { title: 'Articles', articles: articles });
         }
-    ];
-    res.render('index', { title: 'Hello', articles: articles });
+    });
 });
 
 app.get('/articles/add', (req, res) => {
