@@ -4,11 +4,13 @@
     "description": "Simple knowledgebase app",
     "main": "app.js",
     "scripts": {
-        "start": "node app"
+        "start": "nodemon app"
     },
     "author": "Zlatko Iliev",
     "license": "ISC",
     "dependencies": {
-        "express": "^4.16.2"
+        "ejs": "^2.5.7",
+        "express": "^4.16.2",
+        "mongoose": "^5.0.7"
     }
 }
