@@ -1,6 +1,10 @@
 <% include ./header %>
-    <div><%= title %></div>
-    <% articles.map((user, i) => { %>
-        <li><%= user.title %></li>
-    <% }); %>
+    <h1><%= title %></h1>
+    <ul class="list-group">
+        <% articles.map((article, i) => { %>
+            <li class="list-group-item">
+                <a href="/article/<%=article._id%>"><%= article.title %></a>
+            </li>
+        <% }); %>
+    </ul>
 <% include ./footer %>

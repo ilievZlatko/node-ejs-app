@@ -2,6 +2,7 @@ const express = require('express');
 const ejs = require('ejs');
 const path = require('path');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -22,7 +23,9 @@ db.on('error', err => {
     console.log(err);
 });
 
-app.use(express.static(__dirname + '/assets'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Load View Engine
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +42,35 @@ app.get('/', (req, res) => {
     });
 });
 
+// Add Route
 app.get('/articles/add', (req, res) => {
     res.render('add_article', { title: 'Add Article' });
+});
+
+// Add Submit POST Route
+app.post('/articles/add', (req, res) => {
+    const article = Object.assign(new Article(), req.body);
+
+    article.save(err => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            res.redirect('/');
+        }
+    });
+});
+
+// Get single article
+app.get('/article/:id', (req, res) => {
+    Article.findById(req.params.id, (err, article) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            res.render('article', { article });
+        }
+    });
 });
 
 // Start the server
